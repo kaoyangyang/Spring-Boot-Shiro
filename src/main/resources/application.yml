@@ -1,0 +1,24 @@
+server:
+  port: 8083
+spring:
+  freemarker.request-context-attribute: request
+  #mysql配置
+  datasource:
+    driver-class-name: com.mysql.jdbc.Driver
+    url: jdbc:mysql://localhost:3306/girl?useUnicode=true&characterEncoding=UTF-8&useSSL=false
+    username: root
+    password: 123456
+  servlet:
+    multipart:
+      max-file-size: 20Mb
+mybatis-plus:
+  #实体类所做包
+#  type-aliases-package: learning.model
+  #mapper.xml所在位置
+  mapper-locations: classpath:mapper/*.xml
+  configuration:
+    log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
+#    map-underscore-to-camel-case: true
+  global-config:
+      db-column-underline: true
+  typeAliasesPackage: com.infotop.entity

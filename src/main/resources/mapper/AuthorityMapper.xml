@@ -1,0 +1,119 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.infotop.mapper.sys.AuthorityMapper" >
+  <!-- 实体类、数据库列对应  -->
+  <resultMap id="BaseResultMap" type="com.infotop.entity.sys.Authority" >
+    <id column="id" property="id" jdbcType="INTEGER" />
+    <result column="uuid" property="uuid" jdbcType="VARCHAR" />
+    <result column="url" property="url" jdbcType="VARCHAR" />
+    <result column="value" property="value" jdbcType="BLOB" />
+    <result column="perms" property="perms" jdbcType="VARCHAR" />
+    <result column="sort" property="sort" jdbcType="VARCHAR" />
+  </resultMap>
+  <!-- 基础结果集 -->
+  <sql id="Base_Column_List" >
+    id, uuid, url, value, perms, sort
+  </sql>
+  
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Long" >
+    select 
+	<include refid="Base_Column_List" />
+    from sys_authority
+    where id = #{id,jdbcType=BIGINT}
+  </select>
+  
+  <select id="selectAll" resultMap="BaseResultMap"  parameterType="java.util.Map">
+    select 
+    <include refid="Base_Column_List" />
+    from sys_authority
+    where 1=1
+    order by sort asc
+  </select>
+  
+  <select id="selectAllCount" resultType="java.lang.Long" >
+    select 
+    count(1)
+    from sys_authority
+    where 1=1
+  </select>
+  
+  
+  <!-- 根据主键删除数据 -->
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Long" >
+    delete from sys_authority
+    where id = #{id,jdbcType=BIGINT}
+  </delete>
+  <delete id="deleteByUuid" parameterType="java.lang.String" >
+    delete from sys_authority
+    where uuid = #{uuid,jdbcType=VARCHAR}
+  </delete>
+  
+  
+  <!-- 自定义新增数据 -->
+  <insert id="insertSelective" parameterType="com.infotop.entity.sys.Authority" >
+    insert into sys_authority
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        id,
+      </if>
+      <if test="uuid != null" >
+        uuid,
+      </if>
+      <if test="url != null" >
+        url,
+      </if>
+      <if test="value != null" >
+        value,
+      </if>
+      <if test="perms != null" >
+        perms,
+      </if>
+      <if test="sort != null" >
+        sort,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        #{id,jdbcType=BIGINT},
+      </if>
+      <if test="uuid != null" >
+        #{uuid,jdbcType=VARCHAR},
+      </if>
+      <if test="url != null" >
+        #{url,jdbcType=VARCHAR},
+      </if>
+      <if test="value != null" >
+        #{value,jdbcType=BLOB},
+      </if>
+      <if test="perms != null" >
+        #{perms,jdbcType=VARCHAR},
+      </if>
+      <if test="sort != null" >
+        #{sort,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+  
+  <!-- 根据主键修改数据 -->
+  <update id="updateByPrimaryKeySelective" parameterType="com.infotop.entity.sys.Authority" >
+    update sys_authority
+    <set >
+      <if test="uuid != null" >
+        uuid = #{uuid,jdbcType=VARCHAR},
+      </if>
+      <if test="url != null" >
+        url = #{url,jdbcType=VARCHAR},
+      </if>
+      <if test="value != null" >
+        value = #{value,jdbcType=BLOB},
+      </if>
+      <if test="perms != null" >
+        perms = #{perms,jdbcType=VARCHAR},
+      </if>
+      <if test="sort != null" >
+        sort = #{sort,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+</mapper>
