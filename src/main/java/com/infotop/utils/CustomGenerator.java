@@ -49,8 +49,8 @@ public class CustomGenerator{
 //			}
 //		});
 		dataSourceConfig.setDriverName("com.mysql.jdbc.Driver");
-		dataSourceConfig.setUsername("root");
-		dataSourceConfig.setPassword("123456");
+		dataSourceConfig.setUsername("");
+		dataSourceConfig.setPassword("");
 		dataSourceConfig.setUrl("jdbc:mysql://127.0.0.1:3306/circle?characterEncoding=utf8&useSSL=false");
 		autoGenerator.setDataSource(dataSourceConfig);
 
@@ -83,9 +83,9 @@ public class CustomGenerator{
 
 		// 包配置
 		PackageConfig packageConfig = new PackageConfig();
-		packageConfig.setParent("com.boot.rsquality");
+		packageConfig.setParent("com.infotop");
 		packageConfig.setController("controller");
-		packageConfig.setMapper("dao");
+		packageConfig.setMapper("mapper");
 		packageConfig.setXml("mapper");
 		autoGenerator.setPackageInfo(packageConfig);
 

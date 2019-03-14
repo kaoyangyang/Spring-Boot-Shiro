@@ -14,7 +14,7 @@ public class ResultUtil {
 		Result result = new Result();
 		result.setData(object);
 		result.setMsg("成功");
-		result.setCode(1);
+		result.setCode(200);
 		return result;
 	}
 	public static Result error(Integer code ,String msg){

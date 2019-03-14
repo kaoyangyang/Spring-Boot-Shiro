@@ -1,11 +1,14 @@
 package com.infotop.entity.sys;
 
+import com.baomidou.mybatisplus.annotations.TableName;
+
 /**
  * 用户角色关系表
  * 数据库表:sys_user_role
  * 
  * 2016年10月17日上午10:58:14
  */
+@TableName("sys_user_role")
 public class UserRole {
     private Long id;
     private Long userId;	//用户表id

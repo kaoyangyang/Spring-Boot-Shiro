@@ -1,10 +1,15 @@
 package com.infotop.entity.sys;
+
+import com.baomidou.mybatisplus.annotations.TableField;
+import com.baomidou.mybatisplus.annotations.TableName;
+
 /**
  * 角色表
  * 数据库表：sys_role
  * 
  * 2016年10月17日上午9:57:37
  */
+@TableName("sys_role")
 public class Role {
     private Long id;	
     private String uuid;
@@ -16,6 +21,7 @@ public class Role {
     private String updatedid;     //修改人id
     private String updatedtime;     //修改时间
     private String updatedip;		//修改人IP
+	@TableField(exist = false)
     private String permissionIds;	//权限ids，用于转换使用
 
     public Long getId() {

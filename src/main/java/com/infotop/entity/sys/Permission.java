@@ -1,10 +1,14 @@
 package com.infotop.entity.sys;
+
+import com.baomidou.mybatisplus.annotations.TableName;
+
 /**
  * 权限表
  * 数据库表:sys_permission
  * 
  * 2016年10月17日上午10:39:32
  */
+@TableName("sys_permission")
 public class Permission {
     private Long id;
     private String uuid;

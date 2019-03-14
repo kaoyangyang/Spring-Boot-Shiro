@@ -1,7 +1,12 @@
 package com.infotop.shiro;
 
-import com.infotop.database.UserBean;
-import com.infotop.database.UserServiceI;
+import com.baomidou.mybatisplus.mapper.EntityWrapper;
+import com.infotop.entity.sys.Role;
+import com.infotop.entity.sys.RolePermission;
+import com.infotop.entity.sys.User;
+import com.infotop.service.sys.RolePermissionService;
+import com.infotop.service.sys.RoleService;
+import com.infotop.service.sys.UserService;
 import com.infotop.utils.JWTUtil;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -16,18 +21,22 @@ import org.apache.shiro.subject.PrincipalCollection;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.Arrays;
-import java.util.HashSet;
-import java.util.Set;
+import java.util.ArrayList;
+import java.util.List;
 
 @Service
 public class MyRealm extends AuthorizingRealm {
 
     private static final Logger LOGGER = LogManager.getLogger(MyRealm.class);
+
     @Autowired
-    private UserServiceI userServiceI;
+    private UserService userService;
 
+    @Autowired
+    protected RoleService roleService;
 
+    @Autowired
+    protected RolePermissionService rolePermissionService;
     /**
      * 大坑！，必须重写此方法，不然Shiro会报错
      */
@@ -42,11 +51,30 @@ public class MyRealm extends AuthorizingRealm {
     @Override
     protected AuthorizationInfo doGetAuthorizationInfo(PrincipalCollection principals) {
         String username = JWTUtil.getUsername(principals.toString());
-        UserBean user = userServiceI.getUser(username);
+
+        EntityWrapper<User> ew = new EntityWrapper<User>();
+        ew.eq("login_name",username);
+        User user = userService.selectOne(ew);
         SimpleAuthorizationInfo simpleAuthorizationInfo = new SimpleAuthorizationInfo();
-        simpleAuthorizationInfo.addRole(user.getRole());
-        Set<String> permission = new HashSet<>(Arrays.asList(user.getPermission().split(",")));
-        simpleAuthorizationInfo.addStringPermissions(permission);
+        //获取角色列表
+        EntityWrapper<Role> ewRole = new EntityWrapper<>();
+        ewRole.eq("uuid",user.getUuid());
+        List<Role> roles = roleService.selectList(ewRole);
+        List<String> permissionNames = new ArrayList<>();
+        for (Role role : roles) {
+            // 基于Role的权限信息
+            simpleAuthorizationInfo.addRole(role.getName());
+            // 基于Permission的权限信息
+            EntityWrapper<RolePermission> permission = new EntityWrapper<>();
+            permission.eq("role_id",role.getId());
+            List<RolePermission> rolePermissions = rolePermissionService.selectList(permission);
+            for(RolePermission rolePermission :rolePermissions){
+                permissionNames.add(rolePermission.getPermissionValue());
+            }
+            simpleAuthorizationInfo.addStringPermissions(permissionNames);
+        }
+//        simpleAuthorizationInfo.addRole("admin");
+//        simpleAuthorizationInfo.addStringPermission("admin");
         return simpleAuthorizationInfo;
     }
 
@@ -61,15 +89,16 @@ public class MyRealm extends AuthorizingRealm {
         if (username == null) {
             throw new AuthenticationException("token invalid");
         }
-
-        UserBean userBean = userServiceI.getUser(username);
+        EntityWrapper<User> ewRole = new EntityWrapper<>();
+        ewRole.eq("login_name",username);
+        User userBean = userService.selectOne(ewRole);
         if (userBean == null) {
             throw new AuthenticationException("User didn't existed!");
         }
 
-        if (! JWTUtil.verify(token, username, userBean.getPassword())) {
-            throw new AuthenticationException("Username or password error");
-        }
+//        if (! JWTUtil.verify(token, username, userBean.getPassword())) {
+//            throw new AuthenticationException("Username or password error");
+//        }
 
         return new SimpleAuthenticationInfo(token, token, "my_realm");
     }

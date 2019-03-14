@@ -1,6 +1,8 @@
 package com.infotop.entity.sys;
 
 
+import com.baomidou.mybatisplus.annotations.TableField;
+import com.baomidou.mybatisplus.annotations.TableName;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
 /**
@@ -9,6 +11,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
  * 
  * 2016年10月17日上午10:53:59
  */
+@TableName("sys_user")
 public class User {
     private Long id;
     private String uuid;	//uuid，唯一标识符
@@ -30,8 +33,9 @@ public class User {
     private String lastLoginTime;	//最后一次登录时间
     private String lastLoginIp;		//最后一次登录IP
     private String idnumber;		//身份证号
-    
+	@TableField(exist = false)
     private String plainPassword;	//修改密码时使用
+	@TableField(exist = false)
     private String roleIds;			//赋权时作为临时字段获取角色id
     private String nickname;		//昵称
     private String largeAvatar;			//头像
@@ -42,7 +46,7 @@ public class User {
     //用于新增教师用户时向个人信息表中传递数据
     private String realname;	//与个人信息表字段对应
     private String signature;	//与个人信息表字段对应
-    
+	@TableField(exist = false)
     private String verficationCode;	//临时数据，用于校验短信验证码
     
     public Long getId() {

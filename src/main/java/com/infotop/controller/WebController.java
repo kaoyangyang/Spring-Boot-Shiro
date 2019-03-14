@@ -1,12 +1,16 @@
 package com.infotop.controller;
 
-import com.infotop.utils.ResponseBean;
-import com.infotop.database.UserBean;
-import com.infotop.database.UserServiceI;
-import com.infotop.entity.Girl;
+import com.alibaba.fastjson.JSONArray;
+import com.infotop.entity.sys.User;
 import com.infotop.exception.UnauthorizedException;
-import com.infotop.service.GirlService;
+import com.infotop.thrift.basic.client.BasicDataClient;
+import com.infotop.thrift.basic.common.UserDetail;
+import com.infotop.util.JSONUtils;
 import com.infotop.utils.JWTUtil;
+import com.infotop.utils.ResponseBean;
+import com.infotop.utils.Result;
+import com.infotop.utils.ResultUtil;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.apache.shiro.SecurityUtils;
@@ -15,40 +19,65 @@ import org.apache.shiro.authz.annotation.RequiresAuthentication;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.apache.shiro.authz.annotation.RequiresRoles;
 import org.apache.shiro.subject.Subject;
-import org.springframework.beans.factory.annotation.Autowired;
+import org.apache.thrift.TException;
+import org.apache.thrift.transport.TTransportException;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
+import java.util.HashMap;
+import java.util.Map;
 
 @RestController
-//@CrossOrigin
+@CrossOrigin
 public class WebController {
 
     private static final Logger LOGGER = LogManager.getLogger(WebController.class);
-    @Autowired
-    private UserServiceI userServiceI;
 
-    @Autowired
-    private GirlService girlService;
+    @RequestMapping(value = "/login", method = RequestMethod.POST)
+    public Result login(@RequestBody User user) {
+        String userjson = "";
+        String userByUserUuidOrLoginName = "";
+        try {
+            userjson = BasicDataClient.checkLoginNameAndPwd(user.getLoginName(), user.getPassword());
+            if (!StringUtils.isEmpty(userjson)) {
+                Map<String, Object> parseMap = (Map<String, Object>) JSONArray.parse(userjson);
+                String status = parseMap.get("data").toString();
+                if ("true".equals(status)) {
+                    userByUserUuidOrLoginName = BasicDataClient.findUserByUserUuidOrLoginName(user.getLoginName(), 2);
+                }
+                if (StringUtils.isNotEmpty(userByUserUuidOrLoginName)) {
+                    UserDetail userDetail = JSONUtils.convertJsonStr2UserDetail(userByUserUuidOrLoginName);
+                    user.setSmallAvatar(userDetail.getSmallAvatar());
+                    user.setMiddleAvatar(userDetail.getMiddleAvatar());
+                    user.setLargeAvatar(userDetail.getLargeAvatar());
+                    user.setNickname(userDetail.getName());
+                    Map<String, Object> map = new HashMap<>();
+                    map.put("token", JWTUtil.sign(user.getLoginName(), user.getPassword()));
+                    map.put("user", user);
+                    Result success = ResultUtil.success(map);
+                    return success;
+                }
 
-    @PostMapping("/login")
-    public ResponseBean login(@RequestParam(value="username",required=false)  String username,
-                              @RequestParam(value="password",required=false)  String password) {
-        UserBean userBean = userServiceI.getUser(username);
-        if (userBean.getPassword().equals(password)) {
-            return new ResponseBean(200, "Login success", JWTUtil.sign(username, password));
-        } else {
-            throw new UnauthorizedException();
+            }else{
+                Result success = ResultUtil.error(0,"用户名或密码错误");
+                return success;
+            }
+
+        } catch (TTransportException e) {
+            e.printStackTrace();
+        } catch (TException e) {
+            e.printStackTrace();
         }
+
+        throw new UnauthorizedException();
     }
+
 
     @GetMapping("/article")
     public ResponseBean article() {
         Subject subject = SecurityUtils.getSubject();
         if (subject.isAuthenticated()) {
-            List<Girl> girls = girlService.selectList(null);
-            return new ResponseBean(200, "You are already logged in", girls);
+            return new ResponseBean(200, "You are already logged in", null);
         } else {
             return new ResponseBean(200, "You are guest", null);
         }
@@ -75,6 +104,6 @@ public class WebController {
     @RequestMapping(path = "/401")
     @ResponseStatus(HttpStatus.UNAUTHORIZED)
     public ResponseBean unauthorized() {
-        return new ResponseBean(401, "Unauthorized", null);
+        return new ResponseBean(200, "Unauthorized", null);
     }
 }

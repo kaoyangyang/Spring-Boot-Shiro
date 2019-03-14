@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.infotop.mapper.CircleMapper">
+
+	<!-- 通用查询映射结果 -->
+	<resultMap id="BaseResultMap" type="com.infotop.entity.Circle">
+		<id column="id" property="id" />
+		<result column="name" property="name" />
+		<result column="type" property="type" />
+		<result column="sm_pic" property="smPic" />
+		<result column="mid_pic" property="midPic" />
+		<result column="lg_pic" property="lgPic" />
+		<result column="introduction" property="introduction" />
+		<result column="cotent_status" property="cotentStatus" />
+		<result column="join_status" property="joinStatus" />
+		<result column="topic_status" property="topicStatus" />
+		<result column="upload_status" property="uploadStatus" />
+		<result column="download_status" property="downloadStatus" />
+		<result column="creat_user_id" property="creatUserId" />
+		<result column="status" property="status" />
+		<result column="member_nums" property="memberNums" />
+		<result column="creat_time" property="creatTime" />
+	</resultMap>
+
+    <!-- 通用查询结果列 -->
+    <sql id="Base_Column_List">
+        id, name, type, sm_pic AS smPic, mid_pic AS midPic, lg_pic AS lgPic, introduction, cotent_status AS cotentStatus, join_status AS joinStatus, topic_status AS topicStatus, upload_status AS uploadStatus, download_status AS downloadStatus, creat_user_id AS creatUserId, status, member_nums AS memberNums, creat_time AS creatTime
+    </sql>
+
+</mapper>

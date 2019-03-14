@@ -1,11 +1,14 @@
 package com.infotop.entity.sys;
 
+import com.baomidou.mybatisplus.annotations.TableName;
+
 /**
  * 角色权限表
  * 数据库表：sys_role_permission
  * 
  * 2016年10月17日上午11:01:09
  */
+@TableName("sys_role_permission")
 public class RolePermission {
     private Long id;
     private Long roleId;			//角色表id

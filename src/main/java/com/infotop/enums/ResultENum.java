@@ -10,8 +10,8 @@ public enum ResultENum {
 
 	UNKNOW_CODE(-1,"未知错误"),
 	SUCCESS(0,"成功"),
-	PRIMARY_CODE(101,"小于10岁"),
-	NORMAL_CODE(100,"小于16岁,大于10岁");
+	FAILD_CODE(4001,"查询失败"),
+	UNNORMAL_CODE(4002,"数据异常");
 	private Integer code;
 	private String msg;
 	 ResultENum(Integer code, String msg){

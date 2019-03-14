@@ -1,5 +1,8 @@
 package com.infotop.entity.sys;
 
+import com.baomidou.mybatisplus.annotations.TableName;
+
+@TableName("sys_authority")
 public class Authority {
 	private Long id;
 	private String uuid;
