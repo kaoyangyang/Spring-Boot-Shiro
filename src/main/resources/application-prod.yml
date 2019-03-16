@@ -1,0 +1,8 @@
+server:
+  port: 8080
+spring:
+  datasource:
+    driver-class-name: com.mysql.jdbc.Driver
+    url: jdbc:mysql://172.18.16.211:3306/circle?useUnicode=true&characterEncoding=UTF-8&useSSL=false
+    username: iamtop
+    password: Infotop.123$
