@@ -1,5 +1,7 @@
 package com.infotop.shiro;
 
+import com.auth0.jwt.JWT;
+import com.auth0.jwt.interfaces.DecodedJWT;
 import com.baomidou.mybatisplus.mapper.EntityWrapper;
 import com.infotop.entity.sys.Role;
 import com.infotop.entity.sys.RolePermission;
@@ -51,7 +53,6 @@ public class MyRealm extends AuthorizingRealm {
     @Override
     protected AuthorizationInfo doGetAuthorizationInfo(PrincipalCollection principals) {
         String username = JWTUtil.getUsername(principals.toString());
-
         EntityWrapper<User> ew = new EntityWrapper<User>();
         ew.eq("login_name",username);
         User user = userService.selectOne(ew);
@@ -95,7 +96,12 @@ public class MyRealm extends AuthorizingRealm {
         if (userBean == null) {
             throw new AuthenticationException("User didn't existed!");
         }
-
+        Long now = System.currentTimeMillis();
+        DecodedJWT decode = JWT.decode(token);
+        Long expiresAt = decode.getExpiresAt().getTime();
+        if(now>expiresAt){
+            throw new AuthenticationException("Time Out");
+        }
 //        if (! JWTUtil.verify(token, username, userBean.getPassword())) {
 //            throw new AuthenticationException("Username or password error");
 //        }

@@ -58,6 +58,7 @@ public class JWTFilter extends BasicHttpAuthenticationFilter {
             try {
                 executeLogin(request, response);
             } catch (Exception e) {
+                e.printStackTrace();
                 //token无效则不允许继续访问后续方法
                 return false;
 //                response401(request, response);

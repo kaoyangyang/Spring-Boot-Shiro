@@ -52,7 +52,7 @@ public class WebController {
                     user.setLargeAvatar(userDetail.getLargeAvatar());
                     user.setNickname(userDetail.getName());
                     Map<String, Object> map = new HashMap<>();
-                    map.put("token", JWTUtil.sign(user.getLoginName(), user.getPassword()));
+                    map.put("token", JWTUtil.sign(user.getLoginName(), "ly123456"));
                     map.put("user", user);
                     Result success = ResultUtil.success(map);
                     return success;

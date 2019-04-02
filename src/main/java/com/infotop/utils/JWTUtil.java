@@ -29,6 +29,7 @@ public class JWTUtil {
             DecodedJWT jwt = verifier.verify(token);
             return true;
         } catch (Exception exception) {
+            exception.printStackTrace();
             return false;
         }
     }
@@ -42,6 +43,7 @@ public class JWTUtil {
             DecodedJWT jwt = JWT.decode(token);
             return jwt.getClaim("username").asString();
         } catch (JWTDecodeException e) {
+            e.printStackTrace();
             return null;
         }
     }
@@ -62,6 +64,7 @@ public class JWTUtil {
                     .withExpiresAt(date)
                     .sign(algorithm);
         } catch (UnsupportedEncodingException e) {
+            e.printStackTrace();
             return null;
         }
     }
